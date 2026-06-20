@@ -1,15 +1,4 @@
 @if (currentUser(); as user) {
-<div class="d-flex flex-column gap-4">
-  <header class="card border-0 shadow-sm">
-    <div class="card-body p-4">
-      <p class="text-primary text-uppercase fw-semibold small mb-1">Home</p>
-      <h1 class="h2 mb-2">Ciao, {{ user.firstName }}</h1>
-      <p class="text-secondary mb-0">
-        Qui trovi la sessione attiva e il feed personale con i post tuoi e delle persone che segui.
-      </p>
-    </div>
-  </header>
-
   <div class="row g-4">
     <div class="col-12 col-lg-5">
       <article class="card border-0 shadow-sm h-100">
@@ -37,6 +26,7 @@
         <div class="card-body p-4">
           <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
             <div>
+              <h1 class="h2 mb-2">Ciao, {{ user.firstName }}</h1>
               <p class="text-primary text-uppercase fw-semibold small mb-1">Feed</p>
               <h2 id="feed-heading" class="h5 mb-0">Aggiornamenti recenti</h2>
             </div>
@@ -61,6 +51,10 @@
           </div>
           }
 
+          @if (likeError()) {
+          <div class="alert alert-danger" role="alert">{{ likeError() }}</div>
+          }
+
           @if (isFeedLoading() && !feedPosts().length) {
           <div class="d-flex align-items-center gap-2 text-secondary" role="status">
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
@@ -73,7 +67,8 @@
           } @else if (feedPosts().length) {
           <div class="d-flex flex-column gap-3">
             @for (post of feedPosts(); track post.id) {
-            <app-post-card [post]="post" />
+            <app-post-card [post]="post" [likePending]="likePendingId() === post.id"
+              (toggleLike)="onToggleLike($event)" />
             }
           </div>
           }
@@ -81,5 +76,4 @@
       </section>
     </div>
   </div>
-</div>
 }

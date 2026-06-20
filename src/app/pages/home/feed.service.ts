@@ -39,4 +39,14 @@ export class FeedService {
         this.postsState.set(posts);
       });
   }
+
+  applyLikeChange(postId: string, liked: boolean): void {
+    this.postsState.update((posts) =>
+      posts.map((post) =>
+        post.id === postId
+          ? { ...post, isLiked: liked, likesCount: post.likesCount + (liked ? 1 : -1) }
+          : post,
+      ),
+    );
+  }
 }

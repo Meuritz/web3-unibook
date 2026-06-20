@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
 
 import { Post } from '../../core/api/models/post.types';
 import { UserAvatar } from '../user-avatar/user-avatar';
@@ -43,20 +49,25 @@ import { UserAvatar } from '../user-avatar/user-avatar';
         </div>
 
         <footer class="border-top px-3 py-2">
-          <span
-            class="badge rounded-pill border d-inline-flex align-items-center gap-1"
-            [class.bg-primary-subtle]="post().isLiked"
-            [class.text-primary-emphasis]="post().isLiked"
-            [class.border-primary-subtle]="post().isLiked"
-            [class.bg-body-tertiary]="!post().isLiked"
-            [class.text-secondary]="!post().isLiked"
+          <button
+            type="button"
+            class="btn btn-sm rounded-pill border d-inline-flex align-items-center gap-1"
+            [class.btn-primary]="post().isLiked"
+            [class.btn-outline-secondary]="!post().isLiked"
+            [disabled]="likePending()"
+            [attr.aria-pressed]="post().isLiked"
+            (click)="toggleLike.emit(post())"
           >
-            <span aria-hidden="true">{{ post().isLiked ? '👍' : '🤍' }}</span>
+            @if (likePending()) {
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            } @else {
+              <span aria-hidden="true">👍</span>
+            }
             <span>{{ post().likesCount }}</span>
             <span class="visually-hidden">
-              {{ post().likesCount }} like{{ post().isLiked ? ', ti piace' : '' }}
+              like - {{ post().isLiked ? 'rimuovi il tuo like' : 'metti like' }}
             </span>
-          </span>
+          </button>
         </footer>
       </div>
     </article>
@@ -88,6 +99,8 @@ import { UserAvatar } from '../user-avatar/user-avatar';
 })
 export class PostCard {
   readonly post = input.required<Post>();
+  readonly likePending = input(false);
+  readonly toggleLike = output<Post>();
 
   protected readonly authorName = computed(() => {
     const author = this.post().author;

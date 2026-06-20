@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 
 import { AuthService } from '../../core/auth/auth.service';
+import { Post } from '../../core/api/models/post.types';
+import { LikeService } from '../../core/posts/like.service';
 import { UserPostsService } from '../../core/users/user-posts.service';
 import { PostCard } from '../../shared/post-card/post-card';
 import { UserAvatar } from '../../shared/user-avatar/user-avatar';
@@ -23,12 +25,15 @@ export class Profile implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly userPostsService = inject(UserPostsService);
   private readonly profileEditService = inject(ProfileEditService);
+  private readonly likeService = inject(LikeService);
 
   protected readonly currentUser = this.authService.currentUser;
   protected readonly posts = this.userPostsService.posts;
   protected readonly isLoading = this.userPostsService.isLoading;
   protected readonly error = this.userPostsService.error;
   protected readonly isEmpty = this.userPostsService.isEmpty;
+  protected readonly likePendingId = this.likeService.pendingId;
+  protected readonly likeError = this.likeService.error;
   protected readonly isAvatarUpdating = this.profileEditService.isAvatarUpdating;
   protected readonly avatarError = this.profileEditService.avatarError;
   protected readonly isBioUpdating = this.profileEditService.isBioUpdating;
@@ -54,6 +59,13 @@ export class Profile implements OnInit {
     if (user) {
       this.userPostsService.load(user.id);
     }
+  }
+
+  protected onToggleLike(post: Post): void {
+    const like = !post.isLiked;
+    this.likeService.setLiked(post.id, like, () =>
+      this.userPostsService.applyLikeChange(post.id, like),
+    );
   }
 
   protected onAvatarSelected(event: Event): void {

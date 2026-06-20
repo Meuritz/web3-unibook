@@ -43,9 +43,13 @@
         Questo utente non ha ancora pubblicato nessun post.
       </p>
       } @else {
+      @if (likeError()) {
+      <div class="alert alert-danger" role="alert">{{ likeError() }}</div>
+      }
       <div class="d-flex flex-column gap-3">
         @for (post of posts(); track post.id) {
-        <app-post-card [post]="post" />
+        <app-post-card [post]="post" [likePending]="likePendingId() === post.id"
+          (toggleLike)="onToggleLike($event)" />
         }
       </div>
       }

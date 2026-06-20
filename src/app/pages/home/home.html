@@ -1,12 +1,18 @@
 @if (currentUser(); as user) {
-<div class="col-12">
+<div class="col-12 d-flex flex-column gap-4">
+  <section class="card border-0 shadow-sm" aria-labelledby="composer-heading">
+    <div class="card-body p-4">
+      <h1 id="composer-heading" class="h2 mb-3 text-primary fw-semibold">
+        Ciao {{ user.firstName }}! Bentornato su Facemash :)
+      </h1>
+      <app-post-composer (created)="onPostCreated($event)" />
+    </div>
+  </section>
+
   <section class="card border-0 shadow-sm" aria-labelledby="feed-heading" [attr.aria-busy]="isFeedLoading()">
     <div class="card-body p-4">
       <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
-        <div>
-          <h1 class="h2 mb-2 text-primary fw-semibold">Ciao {{ user.firstName }}! Bentornato su Facemash :) </h1>
-          <h2 id="feed-heading" class="h5 mb-0">Aggiornamenti recenti</h2>
-        </div>
+        <h2 id="feed-heading" class="h5 mb-0">Aggiornamenti recenti</h2>
 
         <button type="button" class="btn btn-primary btn-sm rounded-pill px-3" (click)="reloadFeed()"
           [disabled]="isFeedLoading()">

@@ -40,6 +40,10 @@ export class FeedService {
       });
   }
 
+  prependPost(post: Post): void {
+    this.postsState.update((posts) => [post, ...posts]);
+  }
+
   applyLikeChange(postId: string, liked: boolean): void {
     this.postsState.update((posts) =>
       posts.map((post) =>

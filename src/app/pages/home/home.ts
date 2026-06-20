@@ -5,11 +5,12 @@ import { Post } from '../../core/api/models/post.types';
 import { LikeService } from '../../core/posts/like.service';
 import { PostCard } from '../../shared/post-card/post-card';
 import { FeedService } from './feed.service';
+import { PostComposer } from './post-composer/post-composer';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
-  imports: [PostCard],
+  imports: [PostCard, PostComposer],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home implements OnInit {
@@ -31,6 +32,10 @@ export class Home implements OnInit {
 
   protected reloadFeed(): void {
     this.feedService.loadFeed();
+  }
+
+  protected onPostCreated(post: Post): void {
+    this.feedService.prependPost(post);
   }
 
   protected onToggleLike(post: Post): void {

@@ -1,0 +1,68 @@
+<form [formRoot]="form">
+  <div class="composer border rounded-3 overflow-hidden"
+    [class.border-danger]="form.text().touched() && form.text().invalid()">
+    <div class="bg-body-tertiary border-bottom px-3 py-2">
+      <label class="form-label fw-semibold small mb-0" for="composer-text">Crea un post</label>
+    </div>
+
+    <div class="p-3 d-flex flex-column gap-3">
+      <textarea id="composer-text" class="form-control border-0 shadow-none p-0" rows="3"
+        [formField]="form.text" placeholder="A cosa stai pensando?"
+        [attr.aria-invalid]="form.text().touched() && form.text().invalid() ? 'true' : null"
+        aria-describedby="composer-count"></textarea>
+
+      <div class="border-top pt-3">
+        <label class="form-label small text-secondary mb-1" for="composer-image">
+          URL immagine (opzionale)
+        </label>
+        <input id="composer-image" type="url" class="form-control form-control-sm"
+          [formField]="form.imageUrl" placeholder="https://esempio.com/foto.jpg"
+          [class.is-invalid]="form.imageUrl().touched() && form.imageUrl().invalid()"
+          [attr.aria-invalid]="form.imageUrl().touched() && form.imageUrl().invalid() ? 'true' : null" />
+
+        @if (form.imageUrl().touched() && form.imageUrl().invalid()) {
+        <div class="invalid-feedback d-block">
+          @for (error of form.imageUrl().errors(); track error) {
+          <span class="d-block" role="alert">{{ error.message ?? 'URL non valido.' }}</span>
+          }
+        </div>
+        }
+
+        @if (previewUrl(); as url) {
+        <img class="img-fluid rounded border object-fit-cover w-100 mt-2" style="max-height: 16rem;"
+          [src]="url" alt="Anteprima immagine del post" />
+        }
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end align-items-center bg-body-tertiary border-top px-3 py-2">
+      <span id="composer-count" class="small"
+        [class.text-secondary]="remaining() >= 0" [class.text-danger]="remaining() < 0"
+        aria-live="polite">
+        {{ remaining() }}
+      </span>
+    </div>
+  </div>
+
+  @if (form.text().touched() && form.text().invalid()) {
+  <div class="mt-2">
+    @for (error of form.text().errors(); track error) {
+    <span class="d-block text-danger small" role="alert">{{ error.message ?? 'Testo non valido.' }}</span>
+    }
+  </div>
+  }
+
+  @if (form().errors().length) {
+  <div class="alert alert-danger mt-2 mb-0" role="alert">
+    @for (error of form().errors(); track error) {
+    <p class="mb-0">{{ error.message ?? 'Pubblicazione non riuscita.' }}</p>
+    }
+  </div>
+  }
+
+  <div class="d-flex justify-content-end mt-3">
+    <button type="submit" class="btn btn-success px-4" [disabled]="form().submitting()">
+      {{ form().submitting() ? 'Pubblicazione...' : 'Pubblica' }}
+    </button>
+  </div>
+</form>

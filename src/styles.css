@@ -51,3 +51,19 @@ body {
   background-color: var(--brand-primary);
   border-color: var(--brand-primary);
 }
+
+/* Click-the-avatar-to-change-picture control (profile page). */
+.avatar-edit {
+  cursor: pointer;
+}
+
+.avatar-edit__overlay {
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.avatar-edit:hover .avatar-edit__overlay,
+.avatar-edit:focus-within .avatar-edit__overlay {
+  opacity: 1;
+}

@@ -2,15 +2,65 @@
 <div class="row g-4 g-lg-5">
   <aside class="col-12 col-lg-4 col-xl-3">
     <div class="d-flex flex-column gap-3">
-      <app-user-avatar [name]="fullName()" [avatarUrl]="user.avatarUrl" [size]="160" />
+      <div>
+        <label class="avatar-edit position-relative d-inline-block rounded-circle overflow-hidden"
+          [class.pe-none]="isAvatarUpdating()" title="Cambia immagine del profilo">
+          <app-user-avatar [name]="fullName()" [avatarUrl]="user.avatarUrl" [size]="160" />
+
+          <span
+            class="avatar-edit__overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center text-white fw-semibold small p-2">
+            {{ isAvatarUpdating() ? 'Caricamento...' : 'Cambia immagine' }}
+          </span>
+
+          <input type="file" accept="image/*" class="d-none" (change)="onAvatarSelected($event)"
+            [disabled]="isAvatarUpdating()" />
+        </label>
+
+        @if (avatarError()) {
+        <p class="text-danger small mt-2 mb-0" role="alert">{{ avatarError() }}</p>
+        }
+      </div>
 
       <div>
         <h1 class="h3 fw-bold mb-0">{{ fullName() }}</h1>
         <p class="fs-5 text-secondary mb-0">{{ user.email }}</p>
       </div>
 
-      @if (user.bio) {
-      <p class="mb-0">{{ user.bio }}</p>
+      @if (isEditingBio()) {
+      <div class="d-flex flex-column gap-2">
+        <label class="form-label small mb-0" for="profile-bio">Bio</label>
+        <textarea id="profile-bio" class="form-control" rows="4" maxlength="280"
+          [value]="bioDraft()" (input)="bioDraft.set($any($event.target).value)"
+          [disabled]="isBioUpdating()" placeholder="Racconta qualcosa su di te..."></textarea>
+
+        @if (bioError()) {
+        <p class="text-danger small mb-0" role="alert">{{ bioError() }}</p>
+        }
+
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-primary btn-sm" (click)="saveBio()"
+            [disabled]="isBioUpdating()">
+            {{ isBioUpdating() ? 'Salvataggio...' : 'Salva' }}
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEditBio()"
+            [disabled]="isBioUpdating()">
+            Annulla
+          </button>
+        </div>
+      </div>
+      } @else {
+      <div class="d-flex align-items-start justify-content-between gap-2">
+        @if (user.bio) {
+        <p class="mb-0">{{ user.bio }}</p>
+        } @else {
+        <p class="text-secondary fst-italic mb-0">Nessuna bio</p>
+        }
+
+        <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none flex-shrink-0"
+          (click)="startEditBio()">
+          Modifica
+        </button>
+      </div>
       }
 
       <p class="d-flex flex-wrap align-items-center gap-3 text-secondary small mb-0">

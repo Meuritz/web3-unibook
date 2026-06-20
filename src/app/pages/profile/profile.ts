@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { PostCard } from '../../shared/post-card/post-card';
@@ -20,6 +27,13 @@ export class Profile implements OnInit {
   protected readonly isLoading = this.profileService.isLoading;
   protected readonly error = this.profileService.error;
   protected readonly isEmpty = this.profileService.isEmpty;
+  protected readonly isAvatarUpdating = this.profileService.isAvatarUpdating;
+  protected readonly avatarError = this.profileService.avatarError;
+  protected readonly isBioUpdating = this.profileService.isBioUpdating;
+  protected readonly bioError = this.profileService.bioError;
+
+  protected readonly isEditingBio = signal(false);
+  protected readonly bioDraft = signal('');
 
   protected readonly fullName = computed(() => {
     const user = this.currentUser();
@@ -38,5 +52,27 @@ export class Profile implements OnInit {
     if (user) {
       this.profileService.loadPosts(user.id);
     }
+  }
+
+  protected onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      this.profileService.updateAvatar(file);
+    }
+    input.value = '';
+  }
+
+  protected startEditBio(): void {
+    this.bioDraft.set(this.currentUser()?.bio ?? '');
+    this.isEditingBio.set(true);
+  }
+
+  protected cancelEditBio(): void {
+    this.isEditingBio.set(false);
+  }
+
+  protected saveBio(): void {
+    this.profileService.updateBio(this.bioDraft(), () => this.isEditingBio.set(false));
   }
 }

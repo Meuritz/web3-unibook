@@ -10,6 +10,7 @@ import {
   RegisterRequest,
 } from '../api/models/auth.types';
 import { MessageResponse } from '../api/models/api.types';
+import { UserPrivate } from '../api/models/user.types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -68,6 +69,14 @@ export class AuthService {
       this.clearSession();
       await this.router.navigateByUrl('/login');
     }
+  }
+
+  updateCurrentUser(user: UserPrivate): void {
+    const session = this.sessionState();
+    if (!session) {
+      return;
+    }
+    this.persistSession({ ...session, user });
   }
 
   clearSession(): void {

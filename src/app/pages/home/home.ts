@@ -1,12 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 
 import { AuthService } from '../../core/auth/auth.service';
+import { PostCard } from '../../shared/post-card/post-card';
 import { FeedService } from './feed.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
-  styleUrl: './home.css',
+  imports: [PostCard],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home implements OnInit {
   private readonly authService = inject(AuthService);

@@ -17,7 +17,6 @@ import { extractHttpErrorMessage } from '../../core/http/extract-http-error-mess
   selector: 'app-register',
   imports: [FormField, FormRoot, RouterLink],
   templateUrl: './register.html',
-  styleUrl: './register.css',
 })
 export class Register {
   private readonly authService = inject(AuthService);

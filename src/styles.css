@@ -1,39 +1,53 @@
+/* Bootstrap is the base (registered in angular.json). This file is a thin theme */
+/* layer on top of it: purple brand + background. Prefer Bootstrap utilities in */
+/* templates; keep component-specific rules out of here. */
+
 :root {
-  color-scheme: light;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #0f172a;
+  --brand-primary: #6d28d9;
+  --brand-primary-hover: #5b21b6;
+  --brand-primary-active: #4c1d95;
+  --brand-primary-rgb: 109, 40, 217;
+
+  /* Bootstrap 5.3 reads these CSS vars for .text-primary, links, etc. */
+  --bs-primary: var(--brand-primary);
+  --bs-primary-rgb: var(--brand-primary-rgb);
+  --bs-link-color: var(--brand-primary);
+  --bs-link-color-rgb: var(--brand-primary-rgb);
+  --bs-link-hover-color: var(--brand-primary-hover);
+  --bs-link-hover-color-rgb: 91, 33, 182;
+}
+
+body {
+  min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 32%),
-    radial-gradient(circle at top right, rgba(249, 115, 22, 0.12), transparent 28%),
-    linear-gradient(180deg, #f8fafc 0%, #ecfeff 100%);
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.14), transparent 35%),
+    radial-gradient(circle at top right, rgba(167, 139, 250, 0.16), transparent 30%),
+    linear-gradient(180deg, #faf5ff 0%, #f5f3ff 100%);
+  background-attachment: fixed;
 }
 
-* {
-  box-sizing: border-box;
+/* .btn-primary in Bootstrap 5.3 is driven by these per-component CSS vars. */
+.btn-primary {
+  --bs-btn-bg: var(--brand-primary);
+  --bs-btn-border-color: var(--brand-primary);
+  --bs-btn-hover-bg: var(--brand-primary-hover);
+  --bs-btn-hover-border-color: var(--brand-primary-hover);
+  --bs-btn-active-bg: var(--brand-primary-active);
+  --bs-btn-active-border-color: var(--brand-primary-active);
+  --bs-btn-disabled-bg: var(--brand-primary);
+  --bs-btn-disabled-border-color: var(--brand-primary);
+  --bs-btn-focus-shadow-rgb: var(--brand-primary-rgb);
 }
 
-html,
-body {
-  min-height: 100%;
+/* Form focus colors are compiled as fixed blues in Bootstrap, so override them. */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 0.25rem rgba(var(--brand-primary-rgb), 0.2);
 }
 
-body {
-  margin: 0;
-}
-
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-a {
-  color: inherit;
-}
-
-button {
-  touch-action: manipulation;
+.form-check-input:checked {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
 }

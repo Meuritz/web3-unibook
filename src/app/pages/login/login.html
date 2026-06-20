@@ -1,59 +1,62 @@
-<section class="auth-page">
-  <div class="auth-card">
-    <p class="eyebrow">Accesso</p>
-    <h1>Effettua il login</h1>
+<div class="row justify-content-center w-100">
+  <div class="col-12 col-md-9 col-lg-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4 p-md-5">
+        <p class="text-primary text-uppercase fw-semibold small mb-1">Accesso</p>
+        <h1 class="h2 mb-4">Effettua il login</h1>
 
-    <form class="auth-form" [formRoot]="form">
-      <label>
-        <span>Email</span>
-        <input type="email" [formField]="form.email" autocomplete="email" placeholder="mario.rossi@email.it"
-          [class.is-invalid]="form.email().touched() && form.email().invalid()"
-          [attr.aria-invalid]="form.email().touched() && form.email().invalid() ? 'true' : null" />
+        <form class="d-flex flex-column gap-3" [formRoot]="form">
+          <div>
+            <label class="form-label" for="login-email">Email</label>
+            <input id="login-email" type="email" class="form-control" [formField]="form.email"
+              autocomplete="email" placeholder=""
+              [class.is-invalid]="form.email().touched() && form.email().invalid()"
+              [attr.aria-invalid]="form.email().touched() && form.email().invalid() ? 'true' : null" />
 
-        @if (form.email().touched() && form.email().invalid()) {
-        <div class="field-errors">
-          @for (error of form.email().errors(); track error) {
-          <p class="inline-error" role="alert">
-            {{ error.message ?? 'Inserisci un indirizzo email valido.' }}
-          </p>
+            @if (form.email().touched() && form.email().invalid()) {
+            <div class="invalid-feedback d-block">
+              @for (error of form.email().errors(); track error) {
+              <span class="d-block" role="alert">{{ error.message ?? 'Inserisci un indirizzo email valido.' }}</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div>
+            <label class="form-label" for="login-password">Password</label>
+            <input id="login-password" type="password" class="form-control" [formField]="form.password"
+              autocomplete="current-password" placeholder=""
+              [class.is-invalid]="form.password().touched() && form.password().invalid()"
+              [attr.aria-invalid]="form.password().touched() && form.password().invalid() ? 'true' : null" />
+
+            @if (form.password().touched() && form.password().invalid()) {
+            <div class="invalid-feedback d-block">
+              @for (error of form.password().errors(); track error) {
+              <span class="d-block" role="alert">{{ error.message ?? 'Inserisci la password.' }}</span>
+              }
+            </div>
+            }
+          </div>
+
+          @if (form().errors().length) {
+          <div class="alert alert-danger mb-0" role="alert">
+            @for (error of form().errors(); track error) {
+            <p class="mb-0">{{ error.message ?? 'Accesso non riuscito. Verifica le credenziali.' }}</p>
+            }
+          </div>
           }
-        </div>
-        }
-      </label>
 
-      <label>
-        <span>Password</span>
-        <input type="password" [formField]="form.password" autocomplete="current-password" placeholder="password123"
-          [class.is-invalid]="form.password().touched() && form.password().invalid()"
-          [attr.aria-invalid]="form.password().touched() && form.password().invalid() ? 'true' : null" />
+          <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-semibold mt-2"
+            [disabled]="form().submitting()">
+            {{ form().submitting() ? 'Accesso in corso...' : 'Accedi' }}
+          </button>
+        </form>
 
-        @if (form.password().touched() && form.password().invalid()) {
-        <div class="field-errors">
-          @for (error of form.password().errors(); track error) {
-          <p class="inline-error" role="alert">{{ error.message ?? 'Inserisci la password.' }}</p>
-          }
-        </div>
-        }
-      </label>
-
-      @if (form().errors().length) {
-      <div class="field-errors">
-        @for (error of form().errors(); track error) {
-        <p class="inline-error" role="alert">
-          {{ error.message ?? 'Accesso non riuscito. Verifica le credenziali.' }}
+        <p class="text-secondary text-center mt-4 mb-0">
+          Non hai ancora un account?
+          <a routerLink="/register" class="fw-semibold text-decoration-none">Registrati</a>
         </p>
-        }
       </div>
-      }
-
-      <button type="submit" class="primary-button" [disabled]="form().submitting()">
-        {{ form().submitting() ? 'Accesso in corso...' : 'Accedi' }}
-      </button>
-    </form>
-
-    <p class="auth-switch">
-      Non hai ancora un account?
-      <a routerLink="/register">Registrati</a>
-    </p>
+    </div>
   </div>
-</section>
+</div>

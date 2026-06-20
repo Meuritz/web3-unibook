@@ -1,17 +1,47 @@
-<div class="app-shell">
-  <header class="app-header">
-    <a class="brand" routerLink="/home">UniBook Starter</a>
+<div class="min-vh-100 d-flex flex-column">
+  <nav class="navbar navbar-expand-md bg-white border-bottom shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" routerLink="/home">UniBook Starter</a>
 
-    <nav class="app-nav" aria-label="Navigazione principale">
-      <a routerLink="/home" routerLinkActive="nav-link--active" class="nav-link">Home</a>
-      @if (currentUser(); as user) {
-      <p class="user-chip">{{ user.firstName }} {{ user.lastName }}</p>
-      }
-      <button type="button" class="logout-button" (click)="logout()">Logout</button>
-    </nav>
-  </header>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="Apri o chiudi la navigazione">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-  <main class="app-main">
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-md-0 align-items-md-center gap-2">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a>
+          </li>
+
+          @if (currentUser(); as user) {
+          <li class="nav-item dropdown">
+            <button
+              class="btn btn-light rounded-pill dropdown-toggle d-flex align-items-center gap-2 px-2 py-1"
+              type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+              <app-user-avatar [name]="user.firstName + ' ' + user.lastName" [avatarUrl]="user.avatarUrl"
+                [size]="28" />
+              <span class="fw-semibold">{{ user.firstName }} {{ user.lastName }}</span>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+              <li>
+                <a class="dropdown-item" routerLink="/profile" routerLinkActive="active"
+                  ariaCurrentWhenActive="page">Profilo</a>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <button type="button" class="dropdown-item" (click)="logout()">Logout</button>
+              </li>
+            </ul>
+          </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container flex-grow-1 py-4">
     <router-outlet />
   </main>
 </div>

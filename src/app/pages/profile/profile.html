@@ -1,0 +1,62 @@
+@if (currentUser(); as user) {
+<div class="row g-4 g-lg-5">
+  <aside class="col-12 col-lg-4 col-xl-3">
+    <div class="d-flex flex-column gap-3">
+      <app-user-avatar [name]="fullName()" [avatarUrl]="user.avatarUrl" [size]="160" />
+
+      <div>
+        <h1 class="h3 fw-bold mb-0">{{ fullName() }}</h1>
+        <p class="fs-5 text-secondary mb-0">{{ user.email }}</p>
+      </div>
+
+      @if (user.bio) {
+      <p class="mb-0">{{ user.bio }}</p>
+      }
+
+      <p class="d-flex flex-wrap align-items-center gap-3 text-secondary small mb-0">
+        <span><span class="fw-semibold text-body">{{ user.followersCount }}</span> follower</span>
+        <span><span class="fw-semibold text-body">{{ user.followingCount }}</span> seguiti</span>
+      </p>
+    </div>
+  </aside>
+
+  <section class="col-12 col-lg-8 col-xl-9" aria-labelledby="profile-posts-heading"
+    [attr.aria-busy]="isLoading()">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-4">
+      <h2 id="profile-posts-heading" class="h5 mb-0">Post</h2>
+
+      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="reloadPosts()"
+        [disabled]="isLoading()">
+        Aggiorna
+      </button>
+    </div>
+
+    @if (error()) {
+    <div class="alert alert-danger d-flex flex-column align-items-start gap-2" role="alert">
+      <span>{{ error() }}</span>
+      <button type="button" class="btn btn-outline-danger btn-sm" (click)="reloadPosts()"
+        [disabled]="isLoading()">
+        Riprova
+      </button>
+    </div>
+    }
+
+    @if (isLoading() && !posts().length) {
+    <div class="d-flex align-items-center gap-2 text-secondary" role="status">
+      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span>Caricamento post...</span>
+    </div>
+    } @else if (isEmpty()) {
+    <p class="text-center text-secondary border rounded-3 py-5 mb-0" role="status">
+      Non hai ancora pubblicato nessun post.
+    </p>
+    } @else if (posts().length) {
+    <div class="d-flex flex-column gap-3">
+      @for (post of posts(); track post.id) {
+      <app-post-card [post]="post" />
+      }
+    </div>
+    }
+  </section>
+</div>
+}

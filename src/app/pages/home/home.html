@@ -1,95 +1,85 @@
-<section class="home-page">
-  @if (currentUser(); as user) {
-  <header class="panel panel--full">
-    <p class="eyebrow">Home</p>
-    <h1>Ciao, {{ user.firstName }}</h1>
-    <p class="copy">
-      Qui trovi la sessione attiva e il feed personale con i post tuoi e delle persone che segui.
-    </p>
+@if (currentUser(); as user) {
+<div class="d-flex flex-column gap-4">
+  <header class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <p class="text-primary text-uppercase fw-semibold small mb-1">Home</p>
+      <h1 class="h2 mb-2">Ciao, {{ user.firstName }}</h1>
+      <p class="text-secondary mb-0">
+        Qui trovi la sessione attiva e il feed personale con i post tuoi e delle persone che segui.
+      </p>
+    </div>
   </header>
 
-  <div class="grid">
-    <article class="panel">
-      <h2>Sessione attiva</h2>
-      <dl>
-        <div>
-          <dt>Nome</dt>
-          <dd>{{ user.firstName }} {{ user.lastName }}</dd>
-        </div>
-        <div>
-          <dt>Email</dt>
-          <dd>{{ user.email }}</dd>
-        </div>
-        <div>
-          <dt>Data di nascita</dt>
-          <dd>{{ user.birthDate }}</dd>
-        </div>
-        <div>
-          <dt>ID utente</dt>
-          <dd>{{ user.id }}</dd>
-        </div>
-      </dl>
-    </article>
+  <div class="row g-4">
+    <div class="col-12 col-lg-5">
+      <article class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3">Sessione attiva</h2>
+          <dl class="row row-gap-3 mb-0">
+            <dt class="col-5 text-secondary text-uppercase small fw-normal">Nome</dt>
+            <dd class="col-7 fw-semibold mb-0">{{ user.firstName }} {{ user.lastName }}</dd>
 
-    <section class="panel panel--full" aria-labelledby="feed-heading" [attr.aria-busy]="isFeedLoading()">
-      <div class="panel-header">
-        <div>
-          <p class="eyebrow">Feed</p>
-          <h2 id="feed-heading">Aggiornamenti recenti</h2>
+            <dt class="col-5 text-secondary text-uppercase small fw-normal">Email</dt>
+            <dd class="col-7 fw-semibold mb-0">{{ user.email }}</dd>
+
+            <dt class="col-5 text-secondary text-uppercase small fw-normal">Data di nascita</dt>
+            <dd class="col-7 fw-semibold mb-0">{{ user.birthDate }}</dd>
+
+            <dt class="col-5 text-secondary text-uppercase small fw-normal">ID utente</dt>
+            <dd class="col-7 fw-semibold mb-0">{{ user.id }}</dd>
+          </dl>
         </div>
+      </article>
+    </div>
 
-        <button type="button" class="button-secondary" (click)="reloadFeed()" [disabled]="isFeedLoading()">
-          Aggiorna
-        </button>
-      </div>
-
-      @if (isFeedLoading() && feedPosts().length) {
-      <p class="status-inline" role="status">Aggiornamento in corso...</p>
-      }
-
-      @if (feedError()) {
-      <div class="status-box status-box--error" role="alert">
-        <p>{{ feedError() }}</p>
-        <button type="button" class="button-secondary" (click)="reloadFeed()" [disabled]="isFeedLoading()">
-          Riprova
-        </button>
-      </div>
-      }
-
-      @if (isFeedLoading() && !feedPosts().length) {
-      <p class="status-box" role="status">Caricamento feed...</p>
-      } @else if (isFeedEmpty()) {
-      <p class="status-box" role="status">Il feed è vuoto. Segui qualcuno o pubblica il tuo primo post.</p>
-      } @else if (feedPosts().length) {
-      <div class="feed-list">
-        @for (post of feedPosts(); track post.id) {
-        <article class="feed-card">
-          <div class="feed-card__meta">
+    <div class="col-12">
+      <section class="card border-0 shadow-sm" aria-labelledby="feed-heading" [attr.aria-busy]="isFeedLoading()">
+        <div class="card-body p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
             <div>
-              <h3>{{ post.author.firstName }} {{ post.author.lastName }}</h3>
-              <p>{{ post.createdAt }}</p>
+              <p class="text-primary text-uppercase fw-semibold small mb-1">Feed</p>
+              <h2 id="feed-heading" class="h5 mb-0">Aggiornamenti recenti</h2>
             </div>
 
-            <div class="feed-card__stats">
-              <span>{{ post.likesCount }} like</span>
-
-              @if (post.isLiked) {
-              <span class="feed-card__liked">Ti piace</span>
-              }
-            </div>
+            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3" (click)="reloadFeed()"
+              [disabled]="isFeedLoading()">
+              Aggiorna
+            </button>
           </div>
 
-          <p class="feed-card__text">{{ post.text }}</p>
-
-          @if (post.imageUrl) {
-          <img class="feed-card__image" [src]="post.imageUrl"
-            [alt]="'Immagine del post di ' + post.author.firstName + ' ' + post.author.lastName" />
+          @if (isFeedLoading() && feedPosts().length) {
+          <p class="text-primary fw-semibold" role="status">Aggiornamento in corso...</p>
           }
-        </article>
-        }
-      </div>
-      }
-    </section>
+
+          @if (feedError()) {
+          <div class="alert alert-danger d-flex flex-column align-items-start gap-2" role="alert">
+            <span>{{ feedError() }}</span>
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="reloadFeed()"
+              [disabled]="isFeedLoading()">
+              Riprova
+            </button>
+          </div>
+          }
+
+          @if (isFeedLoading() && !feedPosts().length) {
+          <div class="d-flex align-items-center gap-2 text-secondary" role="status">
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span>Caricamento feed...</span>
+          </div>
+          } @else if (isFeedEmpty()) {
+          <p class="alert alert-light border mb-0" role="status">
+            Il feed è vuoto. Segui qualcuno o pubblica il tuo primo post.
+          </p>
+          } @else if (feedPosts().length) {
+          <div class="d-flex flex-column gap-3">
+            @for (post of feedPosts(); track post.id) {
+            <app-post-card [post]="post" />
+            }
+          </div>
+          }
+        </div>
+      </section>
+    </div>
   </div>
-  }
-</section>
+</div>
+}

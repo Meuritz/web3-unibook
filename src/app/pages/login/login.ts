@@ -10,7 +10,6 @@ import { extractHttpErrorMessage } from '../../core/http/extract-http-error-mess
   selector: 'app-login',
   imports: [FormField, FormRoot, RouterLink],
   templateUrl: './login.html',
-  styleUrl: './login.css',
 })
 export class Login {
   private readonly authService = inject(AuthService);

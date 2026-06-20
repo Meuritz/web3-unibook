@@ -8,9 +8,10 @@ import {
 } from '@angular/core';
 
 import { AuthService } from '../../core/auth/auth.service';
+import { UserPostsService } from '../../core/users/user-posts.service';
 import { PostCard } from '../../shared/post-card/post-card';
 import { UserAvatar } from '../../shared/user-avatar/user-avatar';
-import { ProfileService } from './profile.service';
+import { ProfileEditService } from './profile-edit.service';
 
 @Component({
   selector: 'app-profile',
@@ -20,17 +21,18 @@ import { ProfileService } from './profile.service';
 })
 export class Profile implements OnInit {
   private readonly authService = inject(AuthService);
-  private readonly profileService = inject(ProfileService);
+  private readonly userPostsService = inject(UserPostsService);
+  private readonly profileEditService = inject(ProfileEditService);
 
   protected readonly currentUser = this.authService.currentUser;
-  protected readonly posts = this.profileService.posts;
-  protected readonly isLoading = this.profileService.isLoading;
-  protected readonly error = this.profileService.error;
-  protected readonly isEmpty = this.profileService.isEmpty;
-  protected readonly isAvatarUpdating = this.profileService.isAvatarUpdating;
-  protected readonly avatarError = this.profileService.avatarError;
-  protected readonly isBioUpdating = this.profileService.isBioUpdating;
-  protected readonly bioError = this.profileService.bioError;
+  protected readonly posts = this.userPostsService.posts;
+  protected readonly isLoading = this.userPostsService.isLoading;
+  protected readonly error = this.userPostsService.error;
+  protected readonly isEmpty = this.userPostsService.isEmpty;
+  protected readonly isAvatarUpdating = this.profileEditService.isAvatarUpdating;
+  protected readonly avatarError = this.profileEditService.avatarError;
+  protected readonly isBioUpdating = this.profileEditService.isBioUpdating;
+  protected readonly bioError = this.profileEditService.bioError;
 
   protected readonly isEditingBio = signal(false);
   protected readonly bioDraft = signal('');
@@ -43,14 +45,14 @@ export class Profile implements OnInit {
   ngOnInit(): void {
     const user = this.currentUser();
     if (user) {
-      this.profileService.loadPosts(user.id);
+      this.userPostsService.load(user.id);
     }
   }
 
   protected reloadPosts(): void {
     const user = this.currentUser();
     if (user) {
-      this.profileService.loadPosts(user.id);
+      this.userPostsService.load(user.id);
     }
   }
 
@@ -58,7 +60,7 @@ export class Profile implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (file) {
-      this.profileService.updateAvatar(file);
+      this.profileEditService.updateAvatar(file);
     }
     input.value = '';
   }
@@ -73,6 +75,6 @@ export class Profile implements OnInit {
   }
 
   protected saveBio(): void {
-    this.profileService.updateBio(this.bioDraft(), () => this.isEditingBio.set(false));
+    this.profileEditService.updateBio(this.bioDraft(), () => this.isEditingBio.set(false));
   }
 }

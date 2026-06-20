@@ -1,0 +1,55 @@
+<div [attr.aria-busy]="isLoading()">
+  @if (isLoading()) {
+  <div class="d-flex align-items-center gap-2 text-secondary" role="status">
+    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    <span>Caricamento profilo...</span>
+  </div>
+  } @else if (error()) {
+  <div class="alert alert-danger mb-0" role="alert">{{ error() }}</div>
+  } @else if (user(); as user) {
+  <div class="row g-4 g-lg-5">
+    <aside class="col-12 col-lg-4 col-xl-3">
+      <div class="d-flex flex-column gap-3">
+        <app-user-avatar [name]="fullName()" [avatarUrl]="user.avatarUrl" [size]="160" />
+
+        <h1 class="h3 fw-bold mb-0">{{ fullName() }}</h1>
+
+        @if (user.bio) {
+        <p class="mb-0">{{ user.bio }}</p>
+        }
+
+        <p class="d-flex flex-wrap align-items-center gap-3 text-secondary small mb-0">
+          <span><span class="fw-semibold text-body">{{ user.followersCount }}</span> follower</span>
+          <span><span class="fw-semibold text-body">{{ user.followingCount }}</span> seguiti</span>
+        </p>
+
+        <button type="button" class="btn"
+          [class.btn-primary]="!user.isFollowing" [class.btn-outline-secondary]="user.isFollowing"
+          (click)="toggleFollow()" [disabled]="isFollowPending()">
+          {{ user.isFollowing ? 'Smetti di seguire' : 'Segui' }}
+        </button>
+
+        @if (followError()) {
+        <p class="text-danger small mb-0" role="alert">{{ followError() }}</p>
+        }
+      </div>
+    </aside>
+
+    <section class="col-12 col-lg-8 col-xl-9" aria-labelledby="user-posts-heading">
+      <h2 id="user-posts-heading" class="h5 border-bottom pb-2 mb-4">Post</h2>
+
+      @if (isPostsEmpty()) {
+      <p class="text-center text-secondary border rounded-3 py-5 mb-0" role="status">
+        Questo utente non ha ancora pubblicato nessun post.
+      </p>
+      } @else {
+      <div class="d-flex flex-column gap-3">
+        @for (post of posts(); track post.id) {
+        <app-post-card [post]="post" />
+        }
+      </div>
+      }
+    </section>
+  </div>
+  }
+</div>

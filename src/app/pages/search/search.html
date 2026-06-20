@@ -1,0 +1,42 @@
+<div class="d-flex flex-column gap-4">
+  <header>
+    <h1 class="h3 fw-bold mb-1">Cerca utenti</h1>
+    <p class="text-secondary mb-0">Trova altri utenti per nome o cognome.</p>
+  </header>
+
+  <div>
+    <label class="visually-hidden" for="user-search">Nome o cognome</label>
+    <input id="user-search" type="search" class="form-control" name="query" [value]="query()"
+      (input)="onQueryInput($any($event.target).value)" placeholder="Es. Mario Rossi"
+      autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="user-search-results"
+      [attr.aria-expanded]="results().length > 0" />
+  </div>
+
+  <div aria-live="polite" [attr.aria-busy]="isLoading()">
+    @if (error()) {
+    <div class="alert alert-danger mb-0" role="alert">{{ error() }}</div>
+    } @else if (isLoading()) {
+    <div class="d-flex align-items-center gap-2 text-secondary" role="status">
+      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span>Ricerca in corso...</span>
+    </div>
+    } @else if (isEmpty()) {
+    <p class="text-secondary mb-0" role="status">Nessun utente trovato.</p>
+    } @else if (results().length) {
+    <ul class="list-group" id="user-search-results">
+      @for (user of results(); track user.id) {
+      <li class="list-group-item d-flex align-items-center gap-3 py-3">
+        <app-user-avatar [name]="user.firstName + ' ' + user.lastName" [avatarUrl]="user.avatarUrl"
+          [size]="48" />
+
+        <span class="fw-semibold flex-grow-1">{{ user.firstName }} {{ user.lastName }}</span>
+
+        <a class="btn btn-outline-primary btn-sm" [routerLink]="['/users', user.id]">
+          Visita profilo
+        </a>
+      </li>
+      }
+    </ul>
+    }
+  </div>
+</div>

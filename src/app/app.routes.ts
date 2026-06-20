@@ -7,6 +7,8 @@ import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
 import { Profile } from './pages/profile/profile';
 import { Register } from './pages/register/register';
+import { Search } from './pages/search/search';
+import { UserProfile } from './pages/user-profile/user-profile';
 
 export const routes: Routes = [
   {
@@ -41,6 +43,14 @@ export const routes: Routes = [
       {
         path: 'profile',
         component: Profile,
+      },
+      {
+        path: 'search',
+        component: Search,
+      },
+      {
+        path: 'users/:id',
+        component: UserProfile,
       },
     ],
   },

@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,6 +10,7 @@ import {
 
 import { AuthService } from '../../core/auth/auth.service';
 import { Post } from '../../core/api/models/post.types';
+import { UsersApiService } from '../../core/api/users-api.service';
 import { LikeService } from '../../core/posts/like.service';
 import { UserPostsService } from '../../core/users/user-posts.service';
 import { PostCard } from '../../shared/post-card/post-card';
@@ -18,7 +20,7 @@ import { ProfileEditService } from './profile-edit.service';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.html',
-  imports: [PostCard, UserAvatar],
+  imports: [PostCard, UserAvatar, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Profile implements OnInit {
@@ -26,6 +28,7 @@ export class Profile implements OnInit {
   private readonly userPostsService = inject(UserPostsService);
   private readonly profileEditService = inject(ProfileEditService);
   private readonly likeService = inject(LikeService);
+  private readonly usersApiService = inject(UsersApiService);
 
   protected readonly currentUser = this.authService.currentUser;
   protected readonly posts = this.userPostsService.posts;
@@ -52,6 +55,8 @@ export class Profile implements OnInit {
     if (user) {
       this.userPostsService.load(user.id);
     }
+    // ponytail: rinfresca i contatori (la sessione non li aggiorna su follow)
+    this.usersApiService.getMe().subscribe((me) => this.authService.updateCurrentUser(me));
   }
 
   protected reloadPosts(): void {
@@ -68,13 +73,11 @@ export class Profile implements OnInit {
     );
   }
 
-  protected onAvatarSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (file) {
-      this.profileEditService.updateAvatar(file);
+  protected onEditAvatar(): void {
+    const url = prompt('URL della nuova immagine del profilo:', this.currentUser()?.avatarUrl ?? '');
+    if (url !== null) {
+      this.profileEditService.updateAvatar(url);
     }
-    input.value = '';
   }
 
   protected startEditBio(): void {

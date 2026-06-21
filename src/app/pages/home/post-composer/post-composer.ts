@@ -15,9 +15,11 @@ import {
   required,
 } from '@angular/forms/signals';
 
+import { firstValueFrom } from 'rxjs';
+
 import { Post } from '../../../core/api/models/post.types';
+import { PostsApiService } from '../../../core/api/posts-api.service';
 import { extractHttpErrorMessage } from '../../../core/http/extract-http-error-message';
-import { PostComposeService } from '../../../core/posts/post-compose.service';
 
 @Component({
   selector: 'app-post-composer',
@@ -37,7 +39,7 @@ import { PostComposeService } from '../../../core/posts/post-compose.service';
   `,
 })
 export class PostComposer {
-  private readonly postComposeService = inject(PostComposeService);
+  private readonly postsApiService = inject(PostsApiService);
 
   readonly created = output<Post>();
 
@@ -69,12 +71,15 @@ export class PostComposer {
       submission: {
         action: async () => {
           try {
-            const post = await this.postComposeService.create(
-              this.model().text,
-              this.model().imageUrl,
+            const imageUrl = this.model().imageUrl.trim();
+            const post = await firstValueFrom(
+              this.postsApiService.create({
+                text: this.model().text.trim(),
+                imageUrl: imageUrl ? imageUrl : null,
+              }),
             );
             this.created.emit(post);
-            this.resetForm();
+            this.form().reset({ text: '', imageUrl: '' });
             return;
           } catch (error: unknown) {
             return {
@@ -89,8 +94,4 @@ export class PostComposer {
       },
     },
   );
-
-  private resetForm(): void {
-    this.form().reset({ text: '', imageUrl: '' });
-  }
 }

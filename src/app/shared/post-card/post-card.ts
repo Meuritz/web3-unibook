@@ -29,9 +29,7 @@ import { UserAvatar } from '../user-avatar/user-avatar';
           <span class="fw-semibold">{{ authorName() }}</span>
           <span class="text-secondary small">
             ha pubblicato
-            <time [attr.datetime]="post().createdAt" [attr.title]="absoluteDate()">
-              {{ relativeDate() }}
-            </time>
+            <time [attr.datetime]="post().createdAt">{{ relativeDate() }}</time>
           </span>
         </header>
 
@@ -40,8 +38,9 @@ import { UserAvatar } from '../user-avatar/user-avatar';
 
           @if (post().imageUrl) {
             <img
-              class="img-fluid rounded border object-fit-cover w-100 mt-3"
-              style="max-height: 24rem;"
+              class="rounded border d-block mt-3"
+              style="max-height: 24rem; max-width: 100%; height: auto;"
+              loading="lazy"
               [src]="post().imageUrl"
               [alt]="'Immagine del post di ' + authorName()"
             />
@@ -106,10 +105,6 @@ export class PostCard {
     const author = this.post().author;
     return `${author.firstName} ${author.lastName}`;
   });
-
-  protected readonly absoluteDate = computed(() =>
-    this.formatAbsolute(this.post().createdAt),
-  );
 
   protected readonly relativeDate = computed(() =>
     this.formatRelative(this.post().createdAt),

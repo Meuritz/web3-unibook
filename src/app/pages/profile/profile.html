@@ -3,18 +3,16 @@
   <aside class="col-12 col-lg-4 col-xl-3">
     <div class="d-flex flex-column gap-3">
       <div>
-        <label class="avatar-edit position-relative d-inline-block rounded-circle overflow-hidden"
-          [class.pe-none]="isAvatarUpdating()" title="Cambia immagine del profilo">
+        <button type="button"
+          class="avatar-edit position-relative d-inline-block rounded-circle overflow-hidden border-0 bg-transparent p-0"
+          [disabled]="isAvatarUpdating()" (click)="onEditAvatar()" title="Cambia immagine del profilo">
           <app-user-avatar [name]="fullName()" [avatarUrl]="user.avatarUrl" [size]="160" />
 
           <span
             class="avatar-edit__overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center text-white fw-semibold small p-2">
             {{ isAvatarUpdating() ? 'Caricamento...' : 'Cambia immagine' }}
           </span>
-
-          <input type="file" accept="image/*" class="d-none" (change)="onAvatarSelected($event)"
-            [disabled]="isAvatarUpdating()" />
-        </label>
+        </button>
 
         @if (avatarError()) {
         <p class="text-danger small mt-2 mb-0" role="alert">{{ avatarError() }}</p>
@@ -24,6 +22,7 @@
       <div>
         <h1 class="h3 fw-bold mb-0">{{ fullName() }}</h1>
         <p class="fs-5 text-secondary mb-0">{{ user.email }}</p>
+        <p class="text-secondary small mb-0">Nato il {{ user.birthDate | date: 'dd/MM/yyyy' }}</p>
       </div>
 
       @if (isEditingBio()) {

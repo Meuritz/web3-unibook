@@ -1,8 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { EMPTY } from 'rxjs';
-import { catchError, finalize, switchMap } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 
-import { MediaApiService } from '../../core/api/media-api.service';
 import { UsersApiService } from '../../core/api/users-api.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { extractHttpErrorMessage } from '../../core/http/extract-http-error-message';
@@ -11,7 +10,6 @@ import { extractHttpErrorMessage } from '../../core/http/extract-http-error-mess
 @Injectable({ providedIn: 'root' })
 export class ProfileEditService {
   private readonly usersApiService = inject(UsersApiService);
-  private readonly mediaApiService = inject(MediaApiService);
   private readonly authService = inject(AuthService);
 
   private readonly avatarUpdatingState = signal(false);
@@ -24,14 +22,15 @@ export class ProfileEditService {
   readonly isBioUpdating = this.bioUpdatingState.asReadonly();
   readonly bioError = this.bioErrorState.asReadonly();
 
-  updateAvatar(file: File): void {
+  updateAvatar(url: string): void {
     this.avatarUpdatingState.set(true);
     this.avatarErrorState.set(null);
 
-    this.mediaApiService
-      .uploadAvatar(file)
+    const trimmed = url.trim();
+
+    this.usersApiService
+      .updateMe({ avatarUrl: trimmed ? trimmed : null })
       .pipe(
-        switchMap(({ url }) => this.usersApiService.updateMe({ avatarUrl: url })),
         catchError((error: unknown) => {
           this.avatarErrorState.set(
             extractHttpErrorMessage(error, "Impossibile aggiornare l'immagine del profilo."),

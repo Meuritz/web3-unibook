@@ -29,7 +29,7 @@
         }
 
         @if (previewUrl(); as url) {
-        <img class="img-fluid rounded border object-fit-cover w-100 mt-2" style="max-height: 16rem;"
+        <img class="rounded border d-block mt-2" style="max-height: 16rem; max-width: 100%; height: auto;"
           [src]="url" alt="Anteprima immagine del post" />
         }
       </div>

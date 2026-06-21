@@ -30,7 +30,7 @@ export class LikeService {
       .pipe(
         catchError((error: unknown) => {
           this.errorState.set(
-            extractHttpErrorMessage(error, 'Impossibile aggiornare i like al momentop.'),
+            extractHttpErrorMessage(error, 'Impossibile aggiornare i like al momento.'),
           );
           return EMPTY;
         }),

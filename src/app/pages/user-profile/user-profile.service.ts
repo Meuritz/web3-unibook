@@ -6,7 +6,6 @@ import { UserPublic } from '../../core/api/models/user.types';
 import { UsersApiService } from '../../core/api/users-api.service';
 import { extractHttpErrorMessage } from '../../core/http/extract-http-error-message';
 
-/** Owns the public profile (UserPublic) being viewed. */
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
   private readonly usersApiService = inject(UsersApiService);

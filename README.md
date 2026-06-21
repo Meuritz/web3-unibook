@@ -43,8 +43,6 @@ Feature applicative:
 
 Il dettaglio dei requisiti funzionali è in [requisiti.md](requisiti.md).
 
-> Nota: la cancellazione dei propri post è esposta dall'API (`PostsApiService.remove`) ma non ancora collegata alla UI.
-
 ## Configurazione
 
 Endpoint e chiave anon sono in [src/environments/environment.ts](src/environments/environment.ts):

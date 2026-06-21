@@ -31,6 +31,22 @@ import { UserAvatar } from '../user-avatar/user-avatar';
             ha pubblicato
             <time [attr.datetime]="post().createdAt">{{ relativeDate() }}</time>
           </span>
+
+          @if (canDelete()) {
+            <button
+              type="button"
+              class="btn btn-sm btn-link text-danger text-decoration-none ms-auto p-0"
+              [disabled]="deletePending()"
+              (click)="onDelete()"
+            >
+              @if (deletePending()) {
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span class="visually-hidden">Eliminazione in corso</span>
+              } @else {
+                Elimina<span class="visually-hidden"> il post</span>
+              }
+            </button>
+          }
         </header>
 
         <div class="px-3 py-3">
@@ -99,12 +115,25 @@ import { UserAvatar } from '../user-avatar/user-avatar';
 export class PostCard {
   readonly post = input.required<Post>();
   readonly likePending = input(false);
+  readonly currentUserId = input<string | null>(null);
+  readonly deletePending = input(false);
   readonly toggleLike = output<Post>();
+  readonly delete = output<Post>();
 
   protected readonly authorName = computed(() => {
     const author = this.post().author;
     return `${author.firstName} ${author.lastName}`;
   });
+
+  protected readonly canDelete = computed(
+    () => this.currentUserId() !== null && this.post().author.id === this.currentUserId(),
+  );
+
+  protected onDelete(): void {
+    if (confirm('Vuoi eliminare questo post?')) {
+      this.delete.emit(this.post());
+    }
+  }
 
   protected readonly relativeDate = computed(() =>
     this.formatRelative(this.post().createdAt),

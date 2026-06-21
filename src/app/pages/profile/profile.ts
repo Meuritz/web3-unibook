@@ -11,6 +11,7 @@ import {
 import { AuthService } from '../../core/auth/auth.service';
 import { Post } from '../../core/api/models/post.types';
 import { UsersApiService } from '../../core/api/users-api.service';
+import { DeleteService } from '../../core/posts/delete.service';
 import { LikeService } from '../../core/posts/like.service';
 import { UserPostsService } from '../../core/users/user-posts.service';
 import { PostCard } from '../../shared/post-card/post-card';
@@ -28,6 +29,7 @@ export class Profile implements OnInit {
   private readonly userPostsService = inject(UserPostsService);
   private readonly profileEditService = inject(ProfileEditService);
   private readonly likeService = inject(LikeService);
+  private readonly deleteService = inject(DeleteService);
   private readonly usersApiService = inject(UsersApiService);
 
   protected readonly currentUser = this.authService.currentUser;
@@ -37,6 +39,8 @@ export class Profile implements OnInit {
   protected readonly isEmpty = this.userPostsService.isEmpty;
   protected readonly likePendingId = this.likeService.pendingId;
   protected readonly likeError = this.likeService.error;
+  protected readonly deletePendingId = this.deleteService.pendingId;
+  protected readonly deleteError = this.deleteService.error;
   protected readonly isAvatarUpdating = this.profileEditService.isAvatarUpdating;
   protected readonly avatarError = this.profileEditService.avatarError;
   protected readonly isBioUpdating = this.profileEditService.isBioUpdating;
@@ -71,6 +75,10 @@ export class Profile implements OnInit {
     this.likeService.setLiked(post.id, like, () =>
       this.userPostsService.applyLikeChange(post.id, like),
     );
+  }
+
+  protected onDelete(post: Post): void {
+    this.deleteService.remove(post.id, () => this.userPostsService.removePost(post.id));
   }
 
   protected onEditAvatar(): void {

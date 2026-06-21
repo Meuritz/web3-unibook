@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 
 import { AuthService } from '../../core/auth/auth.service';
 import { Post } from '../../core/api/models/post.types';
+import { DeleteService } from '../../core/posts/delete.service';
 import { LikeService } from '../../core/posts/like.service';
 import { PostCard } from '../../shared/post-card/post-card';
 import { FeedService } from './feed.service';
@@ -17,6 +18,7 @@ export class Home implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly feedService = inject(FeedService);
   private readonly likeService = inject(LikeService);
+  private readonly deleteService = inject(DeleteService);
 
   protected readonly currentUser = this.authService.currentUser;
   protected readonly feedPosts = this.feedService.posts;
@@ -25,6 +27,8 @@ export class Home implements OnInit {
   protected readonly isFeedEmpty = this.feedService.isEmpty;
   protected readonly likePendingId = this.likeService.pendingId;
   protected readonly likeError = this.likeService.error;
+  protected readonly deletePendingId = this.deleteService.pendingId;
+  protected readonly deleteError = this.deleteService.error;
 
   ngOnInit(): void {
     this.feedService.loadFeed();
@@ -43,5 +47,9 @@ export class Home implements OnInit {
     this.likeService.setLiked(post.id, like, () =>
       this.feedService.applyLikeChange(post.id, like),
     );
+  }
+
+  protected onDelete(post: Post): void {
+    this.deleteService.remove(post.id, () => this.feedService.removePost(post.id));
   }
 }

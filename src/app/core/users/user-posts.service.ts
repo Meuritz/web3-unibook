@@ -49,4 +49,8 @@ export class UserPostsService {
       ),
     );
   }
+
+  removePost(postId: string): void {
+    this.postsState.update((posts) => posts.filter((post) => post.id !== postId));
+  }
 }
